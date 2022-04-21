@@ -10,7 +10,7 @@ services:
     restart: always
     container_name: vaultwarden
     depends_on: 
-    - caddy
+    - proxy
     volumes:
     - ${PWD}/vaultwarden:/data
     - ${PWD}/utilities/backup.sh:/backup.sh:ro
@@ -54,12 +54,14 @@ services:
              fi &&
              exec /start.sh'
 
-  caddy:
+  proxy:
     # Caddy provides an automatic HTTPS reverse proxy with Let's Encrypt cert provisioning
     # https://caddyserver.com/
+    # https://hub.docker.com/_/caddy?tab=tags&page=1&name=alpine
+    platform: linux/arm64/v8
     image: caddy/caddy:alpine
     restart: always
-    container_name: caddy
+    container_name: proxy
     volumes:
     - ${PWD}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     - ${PWD}/caddy/data:/data
