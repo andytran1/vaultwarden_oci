@@ -1,16 +1,16 @@
 version: '3'
 
-
 services:
   vaultwarden:
     # Standard Bitwarden is very resource-heavy and cannot run on micro cloud instances
     # Vaultwarden is a Rust (mostly) feature-complete implementation of bitwarden
     # https://github.com/dani-garcia/vaultwarden
+    # https://hub.docker.com/r/vaultwarden/server/tags?name=alpine
     image: vaultwarden/server:alpine
     restart: always
     container_name: vaultwarden
     depends_on: 
-    - proxy
+    - caddy
     volumes:
     - ${PWD}/vaultwarden:/data
     - ${PWD}/utilities/backup.sh:/backup.sh:ro
@@ -54,12 +54,12 @@ services:
              fi &&
              exec /start.sh'
 
-  proxy:
+  caddy:
     # Caddy provides an automatic HTTPS reverse proxy with Let's Encrypt cert provisioning
     # https://caddyserver.com/
     image: caddy/caddy:alpine
     restart: always
-    container_name: proxy
+    container_name: caddy
     volumes:
     - ${PWD}/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     - ${PWD}/caddy/data:/data
@@ -78,7 +78,8 @@ services:
     # This provides a ddclient dynamic dns updating cron which is as simple as running it
     # and editing the ddns/config/ddclient.conf file
     # https://github.com/linuxserver/docker-ddclient
-    image: linuxserver/ddclient
+    # https://hub.docker.com/r/linuxserver/ddclient/tags
+    image: linuxserver/ddclient:latest
     restart: always
     container_name: ddns
     depends_on: 
@@ -96,6 +97,7 @@ services:
     # try to bruteforce your vault
     # https://github.com/dani-garcia/vaultwarden/wiki/Fail2Ban-Setup
     # https://github.com/crazy-max/docker-fail2ban
+    # https://hub.docker.com/r/crazymax/fail2ban/tags
     image: crazymax/fail2ban:latest
     restart: always
     container_name: fail2ban
@@ -157,7 +159,8 @@ services:
     # Watchtower will pull down your new image, gracefully shut down your existing container 
     # and restart it with the same options that were used when it was deployed initially
     # https://github.com/containrrr/watchtower
-    image: containrrr/watchtower
+    # https://registry.hub.docker.com/r/containrrr/watchtower/tags?page=1
+    image: containrrr/watchtower:latest
     restart: always
     container_name: watchtower
     depends_on: 
