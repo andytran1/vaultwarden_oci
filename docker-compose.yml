@@ -57,9 +57,8 @@ services:
   proxy:
     # Caddy provides an automatic HTTPS reverse proxy with Let's Encrypt cert provisioning
     # https://caddyserver.com/
-    # https://hub.docker.com/_/caddy?tab=tags&page=1&name=alpine
-    platform: linux/arm64/v8
-    image: caddy/caddy:alpine
+    # https://hub.docker.com/r/arm64v8/caddy/#!
+    image: arm64v8/caddy:alpine
     restart: always
     container_name: proxy
     volumes:
